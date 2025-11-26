@@ -2,8 +2,10 @@ package com.example.myapplication;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,13 +13,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.adapter.CheckInCalendarAdapter;
+import com.example.myapplication.adapter.CheckInRecordAdapter;
+import com.example.myapplication.model.CheckInRecord;
 import com.example.myapplication.model.Habit;
 import com.example.myapplication.utils.SPUtils;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class HabitDetailActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -104,8 +112,55 @@ public class HabitDetailActivity extends AppCompatActivity {
         
         // 显示打卡日历
         List<String> checkInDates = habit.getCheckInDates();
-        adapter = new CheckInCalendarAdapter(checkInDates, currentCalendar);
+        adapter = new CheckInCalendarAdapter(checkInDates, currentCalendar, new CheckInCalendarAdapter.OnDateClickListener() {
+            @Override
+            public void onDateClick(String date) {
+                showCheckInRecordsDialog(date);
+            }
+        });
         recyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * 显示指定日期的打卡记录弹窗
+     */
+    private void showCheckInRecordsDialog(String date) {
+        List<CheckInRecord> records = habit.getCheckInRecordsByDate(date);
+        
+        if (records == null || records.isEmpty()) {
+            Toast.makeText(this, "该日期暂无打卡记录", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 创建底部弹窗
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_check_in_records, null);
+        
+        TextView tvDate = dialogView.findViewById(R.id.tvDate);
+        TextView tvCount = dialogView.findViewById(R.id.tvCount);
+        RecyclerView rvRecords = dialogView.findViewById(R.id.rvCheckInRecords);
+        Button btnClose = dialogView.findViewById(R.id.btnClose);
+        
+        // 格式化日期显示
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());
+        try {
+            tvDate.setText(outputFormat.format(inputFormat.parse(date)));
+        } catch (Exception e) {
+            tvDate.setText(date);
+        }
+        
+        tvCount.setText("共打卡 " + records.size() + " 次 ✓");
+        
+        // 设置记录列表
+        rvRecords.setLayoutManager(new LinearLayoutManager(this));
+        CheckInRecordAdapter recordAdapter = new CheckInRecordAdapter(records);
+        rvRecords.setAdapter(recordAdapter);
+        
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+        
+        dialog.setContentView(dialogView);
+        dialog.show();
     }
 
     private void showDeleteDialog() {

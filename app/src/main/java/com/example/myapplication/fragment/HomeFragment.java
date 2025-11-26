@@ -4,9 +4,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.AddHabitActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.HabitAdapter;
+import com.example.myapplication.model.CheckInRecord;
 import com.example.myapplication.model.Habit;
 import com.example.myapplication.utils.DateUtils;
 import com.example.myapplication.utils.SPUtils;
@@ -69,14 +73,16 @@ public class HomeFragment extends Fragment {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_checkin, null);
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_checkin_with_note, null);
         
-        TextView tvTitle = dialogView.findViewById(R.id.tvTitle);
-        TextView tvMessage = dialogView.findViewById(R.id.tvMessage);
-        android.widget.Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-        android.widget.Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
+        TextView tvTitle = dialogView.findViewById(R.id.dialog_title);
+        TextView tvMessage = dialogView.findViewById(R.id.dialog_message);
+        EditText etNote = dialogView.findViewById(R.id.etNote);
+        Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        Button btnConfirm = dialogView.findViewById(R.id.btn_confirm);
         
-        tvMessage.setText("确认完成一次「" + habit.getTitle() + "」吗？");
+        tvTitle.setText(habit.getTitle());
+        tvMessage.setText("确认完成一次打卡吗？");
         
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
@@ -84,11 +90,18 @@ public class HomeFragment extends Fragment {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         
         btnConfirm.setOnClickListener(v -> {
-            habit.incrementCount();
-            // 记录打卡日期
-            String today = DateUtils.getTodayDate();
-            habit.addCheckInDate(today);
+            // 获取备注内容
+            String note = etNote.getText().toString().trim();
             
+            // 创建打卡记录
+            CheckInRecord record = new CheckInRecord();
+            record.setNote(note);
+            
+            // 添加打卡记录
+            habit.addCheckInRecord(record);
+            habit.incrementCount();
+            
+            // 保存更新
             SPUtils.updateHabit(getContext(), habit);
             adapter.notifyItemChanged(position);
 

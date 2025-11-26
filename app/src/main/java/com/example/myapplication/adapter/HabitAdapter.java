@@ -16,7 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import com.example.myapplication.R;
+import com.example.myapplication.model.CheckInRecord;
 import com.example.myapplication.model.Habit;
 import java.util.List;
 
@@ -82,14 +85,42 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
             holder.tvProgress.setText(progressStr);
         }
         
-        // 设置图标
-        holder.ivIcon.setImageResource(habit.getIconResId());
 
-        // 如果已完成，改变背景色
+        // 如果已完成，显示悬浮的完成标识和改变背景色
         if (habit.isCompleted()) {
             holder.cardView.setCardBackgroundColor(Color.parseColor("#E8F5E9"));
+            holder.ivCompleted.setVisibility(View.VISIBLE);
         } else {
             holder.cardView.setCardBackgroundColor(Color.WHITE);
+            holder.ivCompleted.setVisibility(View.GONE);
+        }
+
+        // 显示今日打卡记录
+        List<CheckInRecord> todayRecords = habit.getTodayCheckInRecords();
+        if (todayRecords != null && !todayRecords.isEmpty()) {
+            holder.layoutTimeList.setVisibility(View.VISIBLE);
+            holder.layoutTimeList.removeAllViews();
+            
+            for (CheckInRecord record : todayRecords) {
+                View timeItemView = LayoutInflater.from(holder.itemView.getContext())
+                        .inflate(R.layout.item_check_in_time, holder.layoutTimeList, false);
+                
+                TextView tvTime = timeItemView.findViewById(R.id.tvTime);
+                TextView tvNote = timeItemView.findViewById(R.id.tvNote);
+                
+                tvTime.setText("⏰ " + record.getTime());
+                
+                if (record.hasNote()) {
+                    tvNote.setVisibility(View.VISIBLE);
+                    tvNote.setText(record.getNote());
+                } else {
+                    tvNote.setVisibility(View.GONE);
+                }
+                
+                holder.layoutTimeList.addView(timeItemView);
+            }
+        } else {
+            holder.layoutTimeList.setVisibility(View.GONE);
         }
 
         holder.itemView.setOnClickListener(v -> {
@@ -118,16 +149,18 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        ImageView ivIcon;
         TextView tvTitle;
         TextView tvProgress;
+        LinearLayout layoutTimeList;
+        ImageView ivCompleted;
 
         ViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView);
-            ivIcon = itemView.findViewById(R.id.ivIcon);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvProgress = itemView.findViewById(R.id.tvProgress);
+            layoutTimeList = itemView.findViewById(R.id.layoutTimeList);
+            ivCompleted = itemView.findViewById(R.id.ivCompleted);
         }
     }
 }

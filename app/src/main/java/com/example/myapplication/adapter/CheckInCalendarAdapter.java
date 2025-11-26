@@ -21,10 +21,22 @@ import java.util.Locale;
 public class CheckInCalendarAdapter extends RecyclerView.Adapter<CheckInCalendarAdapter.ViewHolder> {
     private List<CalendarDay> days;
     private List<String> checkInDates;
+    private Calendar currentMonth;
+    private OnDateClickListener listener;
+
+    public interface OnDateClickListener {
+        void onDateClick(String date);
+    }
+
+    public CheckInCalendarAdapter(List<String> checkInDates, Calendar currentMonth, OnDateClickListener listener) {
+        this.checkInDates = checkInDates;
+        this.currentMonth = currentMonth;
+        this.listener = listener;
+        this.days = generateMonthCalendar(currentMonth);
+    }
 
     public CheckInCalendarAdapter(List<String> checkInDates, Calendar currentMonth) {
-        this.checkInDates = checkInDates;
-        this.days = generateMonthCalendar(currentMonth);
+        this(checkInDates, currentMonth, null);
     }
 
     private List<CalendarDay> generateMonthCalendar(Calendar currentMonth) {
@@ -77,6 +89,22 @@ public class CheckInCalendarAdapter extends RecyclerView.Adapter<CheckInCalendar
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CalendarDay day = days.get(position);
         holder.tvDay.setText(day.dayNum);
+        
+        // 添加点击事件
+        if (day.isCurrentMonth && !day.dayNum.isEmpty()) {
+            holder.itemView.setOnClickListener(v -> {
+                if (listener != null && day.isChecked) {
+                    // 构造日期字符串
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    Calendar cal = (Calendar) currentMonth.clone();
+                    cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(day.dayNum));
+                    String dateStr = sdf.format(cal.getTime());
+                    listener.onDateClick(dateStr);
+                }
+            });
+        } else {
+            holder.itemView.setOnClickListener(null);
+        }
 
         if (!day.isCurrentMonth || day.dayNum.isEmpty()) {
             // 空白日期

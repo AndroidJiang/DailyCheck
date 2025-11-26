@@ -37,7 +37,13 @@ public class HabitListAdapter extends RecyclerView.Adapter<HabitListAdapter.View
         Habit habit = habits.get(position);
         holder.tvTitle.setText(habit.getTitle());
         holder.tvInfo.setText("目标: " + habit.getTargetCount() + "次/天 | 已打卡 " + habit.getCheckInDates().size() + " 天");
-        holder.ivIcon.setImageResource(habit.getIconResId());
+        
+        // 如果今日已完成，显示完成印章；否则显示普通图标
+        if (habit.isCompleted()) {
+            holder.ivIcon.setImageResource(R.drawable.ic_completed_stamp);
+        } else {
+            holder.ivIcon.setImageResource(R.drawable.ic_daka);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
