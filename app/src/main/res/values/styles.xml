@@ -5,6 +5,13 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <!-- NumberPicker样式 -->
+    <style name="NumberPickerTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/theme_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textSize">18sp</item>
+    </style>
     
 </resources>
 

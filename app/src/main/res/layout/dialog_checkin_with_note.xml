@@ -26,6 +26,84 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp" />
 
+    <!-- 时间选择区域 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="打卡时间"
+        android:textSize="14sp"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/card_background"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp">
+
+        <!-- 小时选择 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="小时"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp" />
+
+            <NumberPicker
+                android:id="@+id/hourPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:theme="@style/NumberPickerTheme" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <!-- 分钟选择 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="分钟"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp" />
+
+            <NumberPicker
+                android:id="@+id/minutePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:theme="@style/NumberPickerTheme" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <!-- 备注输入区域 -->
     <TextView
         android:layout_width="wrap_content"
@@ -46,7 +124,7 @@
         android:gravity="start"
         android:padding="12dp"
         android:background="@drawable/card_background"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

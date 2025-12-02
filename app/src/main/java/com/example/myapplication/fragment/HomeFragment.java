@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -25,7 +26,9 @@ import com.example.myapplication.model.Habit;
 import com.example.myapplication.utils.DateUtils;
 import com.example.myapplication.utils.SPUtils;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -77,6 +80,8 @@ public class HomeFragment extends Fragment {
         
         TextView tvTitle = dialogView.findViewById(R.id.dialog_title);
         TextView tvMessage = dialogView.findViewById(R.id.dialog_message);
+        NumberPicker hourPicker = dialogView.findViewById(R.id.hourPicker);
+        NumberPicker minutePicker = dialogView.findViewById(R.id.minutePicker);
         EditText etNote = dialogView.findViewById(R.id.etNote);
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
         Button btnConfirm = dialogView.findViewById(R.id.btn_confirm);
@@ -84,21 +89,54 @@ public class HomeFragment extends Fragment {
         tvTitle.setText(habit.getTitle());
         tvMessage.setText("确认完成一次打卡吗？");
         
+        // 设置小时选择器（0-23）
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(23);
+        hourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
+        
+        // 设置分钟选择器（0-59）
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+        minutePicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
+        
+        // 默认设置为当前时间
+        Calendar now = Calendar.getInstance();
+        hourPicker.setValue(now.get(Calendar.HOUR_OF_DAY));
+        minutePicker.setValue(now.get(Calendar.MINUTE));
+        
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
         
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         
         btnConfirm.setOnClickListener(v -> {
+            // 获取选择的时间
+            int selectedHour = hourPicker.getValue();
+            int selectedMinute = minutePicker.getValue();
+            
+            // 根据用户选择的时间构建timestamp
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
+            calendar.set(Calendar.MINUTE, selectedMinute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            long customTimestamp = calendar.getTimeInMillis();
+            
             // 获取备注内容
             String note = etNote.getText().toString().trim();
             
-            // 创建打卡记录
-            CheckInRecord record = new CheckInRecord();
-            record.setNote(note);
+            // 创建打卡记录，使用用户选择的时间作为timestamp
+            CheckInRecord record = new CheckInRecord(customTimestamp, note);
             
             // 添加打卡记录
-            habit.addCheckInRecord(record);
+            String today = DateUtils.getTodayDate();
+            List<CheckInRecord> recordsToday = habit.getCheckInRecords().get(today);
+            if (recordsToday == null) {
+                recordsToday = new ArrayList<>();
+                habit.getCheckInRecords().put(today, recordsToday);
+            }
+            recordsToday.add(record);
+            
             habit.incrementCount();
             
             // 保存更新
