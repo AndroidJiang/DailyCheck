@@ -23,6 +23,7 @@ import com.example.myapplication.utils.SPUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -98,7 +99,14 @@ public class HabitDetailActivity extends AppCompatActivity {
         toolbar.setTitle(habit.getTitle());
         tvTitle.setText(habit.getTitle());
         tvTarget.setText("每日目标：" + habit.getTargetCount() + " 次");
-        tvTotalDays.setText("已打卡天数：" + habit.getCheckInDates().size() + " 天");
+        
+        // 从 checkInRecords 中计算打卡天数
+        int checkInDays = 0;
+        if (habit.getCheckInRecords() != null) {
+            checkInDays = habit.getCheckInRecords().size();
+        }
+        tvTotalDays.setText("已打卡天数：" + checkInDays + " 天");
+        
         ivIcon.setImageResource(habit.getIconResId());
 
         updateCalendar();
@@ -110,8 +118,13 @@ public class HabitDetailActivity extends AppCompatActivity {
         int month = currentCalendar.get(Calendar.MONTH) + 1;
         tvMonth.setText(year + "年" + month + "月");
         
+        // 从 checkInRecords 中提取所有有记录的日期
+        List<String> checkInDates = new ArrayList<>();
+        if (habit.getCheckInRecords() != null) {
+            checkInDates.addAll(habit.getCheckInRecords().keySet());
+        }
+        
         // 显示打卡日历
-        List<String> checkInDates = habit.getCheckInDates();
         adapter = new CheckInCalendarAdapter(checkInDates, currentCalendar, new CheckInCalendarAdapter.OnDateClickListener() {
             @Override
             public void onDateClick(String date) {
