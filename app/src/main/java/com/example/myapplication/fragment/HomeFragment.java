@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.example.myapplication.AddHabitActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.HabitAdapter;
@@ -47,8 +48,8 @@ public class HomeFragment extends Fragment {
     private void initViews(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);
 
-        // 设置GridLayoutManager，一行两列
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        // 设置瀑布流布局，一行两列
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
     }
 
@@ -80,8 +81,10 @@ public class HomeFragment extends Fragment {
         
         TextView tvTitle = dialogView.findViewById(R.id.dialog_title);
         TextView tvMessage = dialogView.findViewById(R.id.dialog_message);
-        NumberPicker hourPicker = dialogView.findViewById(R.id.hourPicker);
-        NumberPicker minutePicker = dialogView.findViewById(R.id.minutePicker);
+        NumberPicker startHourPicker = dialogView.findViewById(R.id.startHourPicker);
+        NumberPicker startMinutePicker = dialogView.findViewById(R.id.startMinutePicker);
+        NumberPicker endHourPicker = dialogView.findViewById(R.id.endHourPicker);
+        NumberPicker endMinutePicker = dialogView.findViewById(R.id.endMinutePicker);
         EditText etNote = dialogView.findViewById(R.id.etNote);
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
         Button btnConfirm = dialogView.findViewById(R.id.btn_confirm);
@@ -89,20 +92,32 @@ public class HomeFragment extends Fragment {
         tvTitle.setText(habit.getTitle());
         tvMessage.setText("确认完成一次打卡吗？");
         
-        // 设置小时选择器（0-23）
-        hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(23);
-        hourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
-        
-        // 设置分钟选择器（0-59）
-        minutePicker.setMinValue(0);
-        minutePicker.setMaxValue(59);
-        minutePicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
-        
-        // 默认设置为当前时间
+        // 获取当前时间
         Calendar now = Calendar.getInstance();
-        hourPicker.setValue(now.get(Calendar.HOUR_OF_DAY));
-        minutePicker.setValue(now.get(Calendar.MINUTE));
+        int currentHour = now.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = now.get(Calendar.MINUTE);
+        
+        // 设置开始时间选择器（0-23小时，0-59分钟）
+        startHourPicker.setMinValue(0);
+        startHourPicker.setMaxValue(23);
+        startHourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
+        startHourPicker.setValue(currentHour);
+        
+        startMinutePicker.setMinValue(0);
+        startMinutePicker.setMaxValue(59);
+        startMinutePicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
+        startMinutePicker.setValue(currentMinute);
+        
+        // 设置结束时间选择器
+        endHourPicker.setMinValue(0);
+        endHourPicker.setMaxValue(23);
+        endHourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
+        endHourPicker.setValue(currentHour);
+        
+        endMinutePicker.setMinValue(0);
+        endMinutePicker.setMaxValue(59);
+        endMinutePicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
+        endMinutePicker.setValue(currentMinute);
         
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
@@ -110,23 +125,41 @@ public class HomeFragment extends Fragment {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         
         btnConfirm.setOnClickListener(v -> {
-            // 获取选择的时间
-            int selectedHour = hourPicker.getValue();
-            int selectedMinute = minutePicker.getValue();
+            // 获取开始时间
+            int startHour = startHourPicker.getValue();
+            int startMinute = startMinutePicker.getValue();
             
-            // 根据用户选择的时间构建timestamp
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
-            calendar.set(Calendar.MINUTE, selectedMinute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            long customTimestamp = calendar.getTimeInMillis();
+            // 获取结束时间
+            int endHour = endHourPicker.getValue();
+            int endMinute = endMinutePicker.getValue();
+            
+            // 构建开始时间戳
+            Calendar startCalendar = Calendar.getInstance();
+            startCalendar.set(Calendar.HOUR_OF_DAY, startHour);
+            startCalendar.set(Calendar.MINUTE, startMinute);
+            startCalendar.set(Calendar.SECOND, 0);
+            startCalendar.set(Calendar.MILLISECOND, 0);
+            long startTimestamp = startCalendar.getTimeInMillis();
+            
+            // 构建结束时间戳
+            Calendar endCalendar = Calendar.getInstance();
+            endCalendar.set(Calendar.HOUR_OF_DAY, endHour);
+            endCalendar.set(Calendar.MINUTE, endMinute);
+            endCalendar.set(Calendar.SECOND, 0);
+            endCalendar.set(Calendar.MILLISECOND, 0);
+            long endTimestamp = endCalendar.getTimeInMillis();
+            
+            // 验证时间
+            if (endTimestamp < startTimestamp) {
+                Toast.makeText(getContext(), "⚠️ 结束时间不能早于开始时间", Toast.LENGTH_SHORT).show();
+                return;
+            }
             
             // 获取备注内容
             String note = etNote.getText().toString().trim();
             
-            // 创建打卡记录，使用用户选择的时间作为timestamp
-            CheckInRecord record = new CheckInRecord(customTimestamp, note);
+            // 创建打卡记录，使用开始和结束时间
+            CheckInRecord record = new CheckInRecord(startTimestamp, endTimestamp, note);
             
             // 添加打卡记录
             String today = DateUtils.getTodayDate();

@@ -108,6 +108,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
                 TextView tvTime = timeItemView.findViewById(R.id.tvTime);
                 TextView tvNote = timeItemView.findViewById(R.id.tvNote);
                 
+                // 只显示时间段，不显示时长
                 tvTime.setText("⏰ " + record.getTime());
                 
                 if (record.hasNote()) {

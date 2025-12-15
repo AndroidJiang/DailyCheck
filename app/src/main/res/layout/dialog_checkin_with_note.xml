@@ -39,12 +39,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
         android:background="@drawable/card_background"
-        android:padding="16dp"
+        android:padding="12dp"
         android:layout_marginBottom="16dp">
 
-        <!-- 小时选择 -->
+        <!-- 开始时间 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -55,30 +54,55 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="小时"
+                android:text="开始时间"
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="4dp" />
 
-            <NumberPicker
-                android:id="@+id/hourPicker"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="120dp"
-                android:theme="@style/NumberPickerTheme" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <NumberPicker
+                    android:id="@+id/startHourPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:theme="@style/NumberPickerTheme" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp" />
+
+                <NumberPicker
+                    android:id="@+id/startMinutePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:theme="@style/NumberPickerTheme" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+        <!-- 分隔符 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=":"
+            android:text="→"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/theme_primary"
+            android:layout_gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp" />
 
-        <!-- 分钟选择 -->
+        <!-- 结束时间 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -89,16 +113,40 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="分钟"
+                android:text="结束时间"
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="4dp" />
 
-            <NumberPicker
-                android:id="@+id/minutePicker"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="120dp"
-                android:theme="@style/NumberPickerTheme" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <NumberPicker
+                    android:id="@+id/endHourPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:theme="@style/NumberPickerTheme" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp" />
+
+                <NumberPicker
+                    android:id="@+id/endMinutePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:theme="@style/NumberPickerTheme" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

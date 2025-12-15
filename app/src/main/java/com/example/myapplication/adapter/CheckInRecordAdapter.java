@@ -36,7 +36,8 @@ public class CheckInRecordAdapter extends RecyclerView.Adapter<CheckInRecordAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CheckInRecord record = records.get(position);
         
-        holder.tvTime.setText(record.getTimeWithSeconds());
+        // 只显示时间段，不显示时长
+        holder.tvTime.setText(record.getTime());
         
         if (record.hasNote()) {
             holder.layoutNote.setVisibility(View.VISIBLE);
