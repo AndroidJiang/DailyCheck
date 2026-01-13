@@ -19,7 +19,7 @@ import com.example.myapplication.adapter.CheckInCalendarAdapter;
 import com.example.myapplication.adapter.CheckInRecordAdapter;
 import com.example.myapplication.model.CheckInRecord;
 import com.example.myapplication.model.Habit;
-import com.example.myapplication.utils.SPUtils;
+import com.example.myapplication.utils.MMKVUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import java.text.SimpleDateFormat;
@@ -53,7 +53,7 @@ public class HabitDetailActivity extends AppCompatActivity {
             return;
         }
 
-        habit = SPUtils.getHabitById(this, habitId);
+        habit = MMKVUtils.getHabitById(habitId);
         if (habit == null) {
             finish();
             return;
@@ -181,7 +181,7 @@ public class HabitDetailActivity extends AppCompatActivity {
                 .setTitle("删除确认")
                 .setMessage("确定要删除「" + habit.getTitle() + "」吗？所有打卡记录将被清除。")
                 .setPositiveButton("确定", (dialog, which) -> {
-                    SPUtils.deleteHabit(this, habit.getId());
+                    MMKVUtils.deleteHabit(habit.getId());
                     Toast.makeText(this, "已删除", Toast.LENGTH_SHORT).show();
                     finish();
                 })

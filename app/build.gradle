@@ -15,7 +15,25 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            keyAlias 'egame'
+            keyPassword 'egame@189.cn'
+            storeFile file('egame')
+            storePassword 'egame@189.cn'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
 
+        debug {
+            keyAlias 'egame'
+            keyPassword 'egame@189.cn'
+            storeFile file('egame')
+            storePassword 'egame@189.cn'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -39,4 +57,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.7.0'
     api 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    
+    // MMKV - 高性能 key-value 存储
+    implementation 'com.tencent:mmkv:1.2.13'
 }

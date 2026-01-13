@@ -25,7 +25,7 @@ import com.example.myapplication.adapter.HabitAdapter;
 import com.example.myapplication.model.CheckInRecord;
 import com.example.myapplication.model.Habit;
 import com.example.myapplication.utils.DateUtils;
-import com.example.myapplication.utils.SPUtils;
+import com.example.myapplication.utils.MMKVUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -54,7 +54,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadData() {
-        habits = SPUtils.getHabits(getContext());
+        habits = MMKVUtils.getHabits();
         
         adapter = new HabitAdapter(habits, new HabitAdapter.OnItemClickListener() {
             @Override
@@ -161,21 +161,28 @@ public class HomeFragment extends Fragment {
             // 创建打卡记录，使用开始和结束时间
             CheckInRecord record = new CheckInRecord(startTimestamp, endTimestamp, note);
             
-            // 添加打卡记录
+            // 添加打卡记录到当前习惯对象
             String today = DateUtils.getTodayDate();
-            List<CheckInRecord> recordsToday = habit.getCheckInRecords().get(today);
-            if (recordsToday == null) {
-                recordsToday = new ArrayList<>();
-                habit.getCheckInRecords().put(today, recordsToday);
-            }
-            recordsToday.add(record);
+            habit.addCheckInRecord(record);
             
+            // 增加计数
             habit.incrementCount();
             
-            // 保存更新
-            SPUtils.updateHabit(getContext(), habit);
+            // 同步保存到 MMKV（写入即持久化，性能更好）
+            boolean saveSuccess = MMKVUtils.updateHabit(habit);
+            
+            if (!saveSuccess) {
+                Toast.makeText(getContext(), "⚠️ 保存失败，请重试", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            // 更新内存中的习惯列表
+            habits.set(position, habit);
+            
+            // 刷新界面
             adapter.notifyItemChanged(position);
-
+            
+            // 显示提示
             if (habit.isCompleted()) {
                 Toast.makeText(getContext(), "🎉 恭喜完成今日目标！继续保持！", Toast.LENGTH_LONG).show();
             } else {
@@ -200,7 +207,7 @@ public class HomeFragment extends Fragment {
         super.onResume();
         // 刷新数据
         if (adapter != null) {
-            habits = SPUtils.getHabits(getContext());
+            habits = MMKVUtils.getHabits();
             adapter.updateData(habits);
         }
     }

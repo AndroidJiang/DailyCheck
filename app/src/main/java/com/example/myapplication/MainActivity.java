@@ -19,9 +19,10 @@ import com.example.myapplication.fragment.AboutFragment;
 import com.example.myapplication.fragment.HomeFragment;
 import com.example.myapplication.fragment.HabitManageFragment;
 import com.example.myapplication.utils.DateUtils;
-import com.example.myapplication.utils.SPUtils;
+import com.example.myapplication.utils.MMKVUtils;
 import com.example.myapplication.model.Habit;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tencent.mmkv.MMKV;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 初始化 MMKV
+        String rootDir = MMKV.initialize(this);
+        
+        // 从 SharedPreferences 迁移数据到 MMKV（只在首次运行时执行）
+        MMKVUtils.migrateFromSP(this);
 
         // 检查并重置数据
         checkAndResetData();
@@ -133,17 +140,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkAndResetData() {
-        String lastResetDate = SPUtils.getLastResetDate(this);
+        String lastResetDate = MMKVUtils.getLastResetDate();
         String todayDate = DateUtils.getTodayDate();
 
         if (!DateUtils.isToday(lastResetDate)) {
             // 需要重置数据
-            List<Habit> habits = SPUtils.getHabits(this);
+            List<Habit> habits = MMKVUtils.getHabits();
             for (Habit habit : habits) {
                 habit.resetCount();
             }
-            SPUtils.saveHabits(this, habits);
-            SPUtils.saveLastResetDate(this, todayDate);
+            MMKVUtils.saveHabits(habits);
+            MMKVUtils.saveLastResetDate(todayDate);
         }
     }
 

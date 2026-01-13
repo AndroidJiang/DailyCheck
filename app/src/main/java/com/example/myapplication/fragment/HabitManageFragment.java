@@ -15,7 +15,7 @@ import com.example.myapplication.HabitDetailActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.HabitListAdapter;
 import com.example.myapplication.model.Habit;
-import com.example.myapplication.utils.SPUtils;
+import com.example.myapplication.utils.MMKVUtils;
 import java.util.List;
 
 public class HabitManageFragment extends Fragment {
@@ -41,7 +41,7 @@ public class HabitManageFragment extends Fragment {
     }
 
     private void loadData() {
-        habits = SPUtils.getHabits(getContext());
+        habits = MMKVUtils.getHabits();
         
         if (habits.isEmpty()) {
             tvEmpty.setVisibility(View.VISIBLE);

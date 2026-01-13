@@ -14,7 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.example.myapplication.model.Habit;
-import com.example.myapplication.utils.SPUtils;
+import com.example.myapplication.utils.MMKVUtils;
 
 public class AddHabitActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -107,18 +107,18 @@ public class AddHabitActivity extends AppCompatActivity {
 
         if (isEdit) {
             // 编辑模式：更新现有习惯
-            Habit habit = SPUtils.getHabitById(this, habitId);
+            Habit habit = MMKVUtils.getHabitById(habitId);
             if (habit != null) {
                 habit.setTitle(title);
                 habit.setTargetCount(targetCount);
                 habit.setIconResId(R.drawable.ic_daka);
-                SPUtils.updateHabit(this, habit);
+                MMKVUtils.updateHabit(habit);
                 Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
             }
         } else {
             // 新建模式
             Habit habit = new Habit(title, targetCount, R.drawable.ic_daka);
-            SPUtils.addHabit(this, habit);
+            MMKVUtils.addHabit(habit);
             Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
         }
 

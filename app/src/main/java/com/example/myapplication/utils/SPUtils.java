@@ -18,11 +18,17 @@ public class SPUtils {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
     }
 
-    // 保存习惯列表
-    public static void saveHabits(Context context, List<Habit> habits) {
-        Gson gson = new Gson();
-        String json = gson.toJson(habits);
-        getSP(context).edit().putString(KEY_HABITS, json).apply();
+    // 保存习惯列表（返回是否成功）
+    public static boolean saveHabits(Context context, List<Habit> habits) {
+        try {
+            Gson gson = new Gson();
+            String json = gson.toJson(habits);
+            // 使用 commit() 而不是 apply()，确保数据同步写入
+            return getSP(context).edit().putString(KEY_HABITS, json).commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // 获取习惯列表
@@ -45,7 +51,8 @@ public class SPUtils {
 
     // 保存最后重置日期
     public static void saveLastResetDate(Context context, String date) {
-        getSP(context).edit().putString(KEY_LAST_RESET_DATE, date).apply();
+        // 使用 commit() 而不是 apply()，确保数据同步写入
+        getSP(context).edit().putString(KEY_LAST_RESET_DATE, date).commit();
     }
 
     // 获取最后重置日期
@@ -60,16 +67,27 @@ public class SPUtils {
         saveHabits(context, habits);
     }
 
-    // 更新习惯
-    public static void updateHabit(Context context, Habit updatedHabit) {
-        List<Habit> habits = getHabits(context);
-        for (int i = 0; i < habits.size(); i++) {
-            if (habits.get(i).getId() == updatedHabit.getId()) {
-                habits.set(i, updatedHabit);
-                break;
+    // 更新习惯（返回是否成功）
+    public static boolean updateHabit(Context context, Habit updatedHabit) {
+        try {
+            List<Habit> habits = getHabits(context);
+            boolean found = false;
+            for (int i = 0; i < habits.size(); i++) {
+                if (habits.get(i).getId() == updatedHabit.getId()) {
+                    habits.set(i, updatedHabit);
+                    found = true;
+                    break;
+                }
             }
+            if (found) {
+                saveHabits(context, habits);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        saveHabits(context, habits);
     }
 
     // 删除习惯
