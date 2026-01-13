@@ -165,10 +165,63 @@ public class HabitDetailActivity extends AppCompatActivity {
         
         tvCount.setText("共打卡 " + records.size() + " 次 ✓");
         
-        // 设置记录列表
+        // 设置记录列表，添加删除监听
         rvRecords.setLayoutManager(new LinearLayoutManager(this));
-        CheckInRecordAdapter recordAdapter = new CheckInRecordAdapter(records);
-        rvRecords.setAdapter(recordAdapter);
+        final CheckInRecordAdapter[] recordAdapterHolder = new CheckInRecordAdapter[1];
+        recordAdapterHolder[0] = new CheckInRecordAdapter(records, new CheckInRecordAdapter.OnRecordDeleteListener() {
+            @Override
+            public void onRecordDelete(CheckInRecord record, int position) {
+                // 确认删除对话框
+                new AlertDialog.Builder(HabitDetailActivity.this)
+                        .setTitle("删除确认")
+                        .setMessage("确定要删除这条打卡记录吗？")
+                        .setPositiveButton("确定", (d, which) -> {
+                            // 从习惯中删除记录
+                            records.remove(position);
+                            
+                            // 如果该日期没有记录了，从 map 中移除该日期
+                            if (records.isEmpty()) {
+                                habit.getCheckInRecords().remove(date);
+                            }
+                            
+                            // 如果是当天的数据，需要减少计数
+                            String today = com.example.myapplication.utils.DateUtils.getTodayDate();
+                            if (date.equals(today)) {
+                                habit.decrementCount();
+                            }
+                            
+                            // 保存到 MMKV
+                            boolean saveSuccess = MMKVUtils.updateHabit(habit);
+                            
+                            if (saveSuccess) {
+                                // 更新适配器
+                                if (records.isEmpty()) {
+                                    // 没有记录了，关闭弹窗
+                                    dialog.dismiss();
+                                    Toast.makeText(HabitDetailActivity.this, "✅ 删除成功", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    // 还有记录，更新列表
+                                    recordAdapterHolder[0].updateData(records);
+                                    tvCount.setText("共打卡 " + records.size() + " 次 ✓");
+                                    Toast.makeText(HabitDetailActivity.this, "✅ 删除成功", Toast.LENGTH_SHORT).show();
+                                }
+                                
+                                // 刷新日历和统计
+                                loadData();
+                                
+                                // 如果是当天数据，通知首页刷新
+                                if (date.equals(today)) {
+                                    setResult(RESULT_OK);
+                                }
+                            } else {
+                                Toast.makeText(HabitDetailActivity.this, "⚠️ 删除失败，请重试", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+            }
+        });
+        rvRecords.setAdapter(recordAdapterHolder[0]);
         
         btnClose.setOnClickListener(v -> dialog.dismiss());
         

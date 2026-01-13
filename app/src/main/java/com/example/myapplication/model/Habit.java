@@ -105,6 +105,12 @@ public class Habit {
             currentCount++;
         }
     }
+    
+    public void decrementCount() {
+        if (currentCount > 0) {
+            currentCount--;
+        }
+    }
 
     public void resetCount() {
         currentCount = 0;

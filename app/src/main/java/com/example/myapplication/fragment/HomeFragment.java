@@ -5,14 +5,16 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.contrarywind.view.WheelView;
+import com.contrarywind.adapter.WheelAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -28,6 +30,7 @@ import com.example.myapplication.utils.DateUtils;
 import com.example.myapplication.utils.MMKVUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,48 +79,117 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+        // 创建自定义对话框
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_checkin_with_note, null);
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_checkin_simple, null);
         
-        TextView tvTitle = dialogView.findViewById(R.id.dialog_title);
-        TextView tvMessage = dialogView.findViewById(R.id.dialog_message);
-        NumberPicker startHourPicker = dialogView.findViewById(R.id.startHourPicker);
-        NumberPicker startMinutePicker = dialogView.findViewById(R.id.startMinutePicker);
-        NumberPicker endHourPicker = dialogView.findViewById(R.id.endHourPicker);
-        NumberPicker endMinutePicker = dialogView.findViewById(R.id.endMinutePicker);
+        TextView tvTitle = dialogView.findViewById(R.id.tvTitle);
+        WheelView wheelStartHour = dialogView.findViewById(R.id.wheelStartHour);
+        WheelView wheelStartMinute = dialogView.findViewById(R.id.wheelStartMinute);
+        WheelView wheelEndHour = dialogView.findViewById(R.id.wheelEndHour);
+        WheelView wheelEndMinute = dialogView.findViewById(R.id.wheelEndMinute);
         EditText etNote = dialogView.findViewById(R.id.etNote);
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
         Button btnConfirm = dialogView.findViewById(R.id.btn_confirm);
         
         tvTitle.setText(habit.getTitle());
-        tvMessage.setText("确认完成一次打卡吗？");
         
         // 获取当前时间
         Calendar now = Calendar.getInstance();
         int currentHour = now.get(Calendar.HOUR_OF_DAY);
         int currentMinute = now.get(Calendar.MINUTE);
         
-        // 设置开始时间选择器（0-23小时，0-59分钟）
-        startHourPicker.setMinValue(0);
-        startHourPicker.setMaxValue(23);
-        startHourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
-        startHourPicker.setValue(currentHour);
+        // 准备小时数据 (0-23)
+        List<String> hours = new ArrayList<>();
+        for (int i = 0; i < 24; i++) {
+            hours.add(String.format(Locale.getDefault(), "%02d", i));
+        }
         
-        startMinutePicker.setMinValue(0);
-        startMinutePicker.setMaxValue(59);
-        startMinutePicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
-        startMinutePicker.setValue(currentMinute);
+        // 准备分钟数据 (0-59)
+        List<String> minutes = new ArrayList<>();
+        for (int i = 0; i < 60; i++) {
+            minutes.add(String.format(Locale.getDefault(), "%02d", i));
+        }
         
-        // 设置结束时间选择器
-        endHourPicker.setMinValue(0);
-        endHourPicker.setMaxValue(23);
-        endHourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
-        endHourPicker.setValue(currentHour);
+        // 配置开始时间小时选择器
+        wheelStartHour.setCyclic(true);
+        wheelStartHour.setAdapter(new WheelAdapter<String>() {
+            @Override
+            public int getItemsCount() {
+                return hours.size();
+            }
+            
+            @Override
+            public String getItem(int index) {
+                return hours.get(index);
+            }
+            
+            @Override
+            public int indexOf(String o) {
+                return hours.indexOf(o);
+            }
+        });
+        wheelStartHour.setCurrentItem(currentHour);
         
-        endMinutePicker.setMinValue(0);
-        endMinutePicker.setMaxValue(59);
-        endMinutePicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
-        endMinutePicker.setValue(currentMinute);
+        // 配置开始时间分钟选择器
+        wheelStartMinute.setCyclic(true);
+        wheelStartMinute.setAdapter(new WheelAdapter<String>() {
+            @Override
+            public int getItemsCount() {
+                return minutes.size();
+            }
+            
+            @Override
+            public String getItem(int index) {
+                return minutes.get(index);
+            }
+            
+            @Override
+            public int indexOf(String o) {
+                return minutes.indexOf(o);
+            }
+        });
+        wheelStartMinute.setCurrentItem(currentMinute);
+        
+        // 配置结束时间小时选择器
+        wheelEndHour.setCyclic(true);
+        wheelEndHour.setAdapter(new WheelAdapter<String>() {
+            @Override
+            public int getItemsCount() {
+                return hours.size();
+            }
+            
+            @Override
+            public String getItem(int index) {
+                return hours.get(index);
+            }
+            
+            @Override
+            public int indexOf(String o) {
+                return hours.indexOf(o);
+            }
+        });
+        wheelEndHour.setCurrentItem(currentHour);
+        
+        // 配置结束时间分钟选择器
+        wheelEndMinute.setCyclic(true);
+        wheelEndMinute.setAdapter(new WheelAdapter<String>() {
+            @Override
+            public int getItemsCount() {
+                return minutes.size();
+            }
+            
+            @Override
+            public String getItem(int index) {
+                return minutes.get(index);
+            }
+            
+            @Override
+            public int indexOf(String o) {
+                return minutes.indexOf(o);
+            }
+        });
+        wheelEndMinute.setCurrentItem(currentMinute);
         
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
@@ -125,13 +197,11 @@ public class HomeFragment extends Fragment {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         
         btnConfirm.setOnClickListener(v -> {
-            // 获取开始时间
-            int startHour = startHourPicker.getValue();
-            int startMinute = startMinutePicker.getValue();
-            
-            // 获取结束时间
-            int endHour = endHourPicker.getValue();
-            int endMinute = endMinutePicker.getValue();
+            // 获取选择的时间
+            int startHour = wheelStartHour.getCurrentItem();
+            int startMinute = wheelStartMinute.getCurrentItem();
+            int endHour = wheelEndHour.getCurrentItem();
+            int endMinute = wheelEndMinute.getCurrentItem();
             
             // 构建开始时间戳
             Calendar startCalendar = Calendar.getInstance();

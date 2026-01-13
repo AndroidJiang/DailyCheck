@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import com.example.myapplication.fragment.AboutFragment;
 import com.example.myapplication.fragment.HomeFragment;
 import com.example.myapplication.fragment.HabitManageFragment;
 import com.example.myapplication.utils.DateUtils;
@@ -82,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new HomeFragment(), "打卡");
         adapter.addFragment(new HabitManageFragment(), "统计");
-        adapter.addFragment(new AboutFragment(), "关于");
         viewPager.setAdapter(adapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -108,9 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.navigation_stats) {
                 viewPager.setCurrentItem(1);
-                return true;
-            } else if (itemId == R.id.navigation_about) {
-                viewPager.setCurrentItem(2);
                 return true;
             }
             return false;

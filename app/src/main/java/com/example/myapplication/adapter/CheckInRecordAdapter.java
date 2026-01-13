@@ -3,6 +3,7 @@ package com.example.myapplication.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,9 +20,20 @@ import java.util.List;
  */
 public class CheckInRecordAdapter extends RecyclerView.Adapter<CheckInRecordAdapter.ViewHolder> {
     private List<CheckInRecord> records;
+    private OnRecordDeleteListener deleteListener;
 
-    public CheckInRecordAdapter(List<CheckInRecord> records) {
+    public interface OnRecordDeleteListener {
+        void onRecordDelete(CheckInRecord record, int position);
+    }
+
+    public CheckInRecordAdapter(List<CheckInRecord> records, OnRecordDeleteListener deleteListener) {
         this.records = records;
+        this.deleteListener = deleteListener;
+    }
+    
+    public void updateData(List<CheckInRecord> newRecords) {
+        this.records = newRecords;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -47,6 +59,13 @@ public class CheckInRecordAdapter extends RecyclerView.Adapter<CheckInRecordAdap
             holder.layoutNote.setVisibility(View.GONE);
             holder.tvNoNote.setVisibility(View.VISIBLE);
         }
+        
+        // 删除按钮点击事件
+        holder.ivDelete.setOnClickListener(v -> {
+            if (deleteListener != null) {
+                deleteListener.onRecordDelete(record, position);
+            }
+        });
     }
 
     @Override
@@ -59,6 +78,7 @@ public class CheckInRecordAdapter extends RecyclerView.Adapter<CheckInRecordAdap
         LinearLayout layoutNote;
         TextView tvNote;
         TextView tvNoNote;
+        ImageView ivDelete;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -66,6 +86,7 @@ public class CheckInRecordAdapter extends RecyclerView.Adapter<CheckInRecordAdap
             layoutNote = itemView.findViewById(R.id.layoutNote);
             tvNote = itemView.findViewById(R.id.tvNote);
             tvNoNote = itemView.findViewById(R.id.tvNoNote);
+            ivDelete = itemView.findViewById(R.id.ivDelete);
         }
     }
 }

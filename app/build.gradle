@@ -10,8 +10,8 @@ android {
         applicationId "com.example.myapplication"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 4
-        versionName "4.0"
+        versionCode 5
+        versionName "5.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -60,4 +60,7 @@ dependencies {
     
     // MMKV - 高性能 key-value 存储
     implementation 'com.tencent:mmkv:1.2.13'
+    
+    // PickerView - 时间选择器（Bigkoo）
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
 }

@@ -9,10 +9,5 @@
         android:id="@+id/navigation_stats"
         android:icon="@android:drawable/ic_menu_sort_by_size"
         android:title="统计" />
-    
-    <item
-        android:id="@+id/navigation_about"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:title="关于" />
 </menu>
 
