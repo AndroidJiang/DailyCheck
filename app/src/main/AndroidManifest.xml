@@ -29,6 +29,12 @@
             android:name=".HabitDetailActivity"
             android:parentActivityName=".MainActivity"
             android:label="习惯详情" />
+
+        <activity 
+            android:name=".TestJumpActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="跳转测试" >
+       </activity>
         
     </application>
 
