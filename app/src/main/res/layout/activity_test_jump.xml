@@ -6,35 +6,16 @@
     android:padding="16dp"
     android:background="@android:color/white">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="跳转测试页面"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#333333"
-        android:gravity="center"
-        android:layout_marginBottom="32dp"
-        android:layout_marginTop="16dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="游戏ID："
-        android:textSize="16sp"
-        android:textColor="#666666"
-        android:layout_marginBottom="8dp"/>
 
     <EditText
-        android:id="@+id/etGameId"
+        android:id="@+id/etDomokoScheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="请输入游戏ID"
-        android:inputType="number"
+        android:hint="请输入大拇哥语音拉起链接"
         android:textSize="16sp"
         android:padding="12dp"
         android:background="@android:drawable/edit_text"
-        android:layout_marginBottom="24dp"/>
+/>
 
     <Button
         android:id="@+id/btnJumpDomoko"
@@ -44,8 +25,16 @@
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:background="#4CAF50"
-        android:layout_marginBottom="16dp"/>
-
+        android:layout_marginBottom="26dp"/>
+    <EditText
+        android:id="@+id/etCloudScheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入云游戏语音拉起链接"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:background="@android:drawable/edit_text"
+        />
     <Button
         android:id="@+id/btnJumpCloud"
         android:layout_width="match_parent"
@@ -56,16 +45,45 @@
         android:background="#2196F3"
         android:layout_marginBottom="16dp"/>
 
-    <TextView
-        android:id="@+id/tvResult"
+    <EditText
+        android:id="@+id/etDomokoUri"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="操作结果将显示在这里"
-        android:textSize="14sp"
-        android:textColor="#999999"
-        android:layout_marginTop="24dp"
+        android:hint="请输入大拇哥Uri拉起链接"
+        android:textSize="16sp"
         android:padding="12dp"
-        android:background="#F5F5F5"/>
+        android:background="@android:drawable/edit_text"
+       />
+    <Button
+        android:id="@+id/btnJumpDomokoUri"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="拉起新版大拇哥Uri-游戏"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:background="#2196F3"
+        android:layout_marginBottom="16dp"/>
+
+
+    <EditText
+        android:id="@+id/etCloudUri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入云游戏Uri拉起链接"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:background="@android:drawable/edit_text"
+        />
+    <Button
+        android:id="@+id/btnJumpCloudUri"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="拉起新版云游戏Uri-游戏"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:background="#2196F3"
+        android:layout_marginBottom="16dp"/>
+
 
 </LinearLayout>
 
