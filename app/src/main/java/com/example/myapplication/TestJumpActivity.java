@@ -40,7 +40,9 @@ public class TestJumpActivity extends AppCompatActivity {
         btnJumpCloudUri = findViewById(R.id.btnJumpCloudUri);
 
         // 设置默认游戏ID用于测试
-        etDomokoScheme.setText("domokonew://carlos.tvthumb.cn/jumpTo?data={\"actionType\":\"9\",\"contentId\":5181282,\"gfrom\":\"1\"}");
+//        etDomokoScheme.setText("domokonew://carlos.tvthumb.cn/jumpTo?data={\"actionType\":\"5\",\"activityUrl\":\"https://act.play.cn/hd/p/signMould/?catId=835\"}");  //连接中带&等需要编码，因为全国推荐位data后编码，故此处也编码，不用单独活动地址编码，保持统一
+        etDomokoScheme.setText("domokonew://carlos.tvthumb.cn/jumpTo?data=%7B%22actionType%22%3A%225%22%2C%22activityUrl%22%3A%22https%3A%2F%2Fact.play.cn%2Fhd%2Fp%2FspecialTopics%2F%3FcatId%3D50720%26type%3Ddmg%26gfrom%3D1%22%7D");
+
         etCloudScheme.setText("newegame://cn.egame.terminal.cloud5g?EGAdParam={\"actionType\":\"2\",\"gameId\":5177423,\"gfrom\":\"1\"}");
         etDomokoUri.setText("{\"actionType\":\"9\",\"contentId\":5181282}");
         etDomokoUri.setText("{\"actionType\":\"9\",\"contentId\":5181282}");
@@ -133,6 +135,7 @@ public class TestJumpActivity extends AppCompatActivity {
             // 处理异常，比如目标应用未安装
             Toast.makeText(this, "无法启动目标应用", Toast.LENGTH_SHORT).show();
         }
+
     }
 }
 

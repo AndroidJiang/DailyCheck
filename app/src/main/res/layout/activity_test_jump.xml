@@ -33,6 +33,7 @@
         android:hint="请输入云游戏语音拉起链接"
         android:textSize="16sp"
         android:padding="12dp"
+        android:visibility="gone"
         android:background="@android:drawable/edit_text"
         />
     <Button
@@ -40,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="拉起新版云游戏-游戏"
-        android:textSize="16sp"
+        android:textSize="16sp" android:visibility="gone"
         android:textColor="@android:color/white"
         android:background="#2196F3"
         android:layout_marginBottom="16dp"/>
@@ -48,7 +49,7 @@
     <EditText
         android:id="@+id/etDomokoUri"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content" android:visibility="gone"
         android:hint="请输入大拇哥Uri拉起链接"
         android:textSize="16sp"
         android:padding="12dp"
@@ -58,7 +59,7 @@
         android:id="@+id/btnJumpDomokoUri"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="拉起新版大拇哥Uri-游戏"
+        android:text="拉起新版大拇哥Uri-游戏" android:visibility="gone"
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:background="#2196F3"
@@ -68,7 +69,7 @@
     <EditText
         android:id="@+id/etCloudUri"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content" android:visibility="gone"
         android:hint="请输入云游戏Uri拉起链接"
         android:textSize="16sp"
         android:padding="12dp"
@@ -78,7 +79,7 @@
         android:id="@+id/btnJumpCloudUri"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="拉起新版云游戏Uri-游戏"
+        android:text="拉起新版云游戏Uri-游戏" android:visibility="gone"
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:background="#2196F3"
