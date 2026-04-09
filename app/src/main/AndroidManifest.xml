@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.myapplication">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/ic_daka"
@@ -34,11 +37,17 @@
             android:name=".TestJumpActivity"
             android:parentActivityName=".MainActivity"
             android:label="跳转测试" >
+        </activity>
+
+        <activity
+            android:name=".SseTestActivity"
+            android:label="SSE流式测试"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-       </activity>
+        </activity>
         
     </application>
 
